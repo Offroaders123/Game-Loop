@@ -3,6 +3,9 @@
     "module": "ESNext",
     "moduleResolution": "NodeNext",
     "target": "ESNext",
+    "types": [
+      "vite/client"
+    ],
     "noEmit": true,
     "strict": true,
     "noImplicitOverride": true,

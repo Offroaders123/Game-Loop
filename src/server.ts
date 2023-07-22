@@ -1,9 +1,12 @@
 /// <reference lib="WebWorker"/>
 
+export type Message = "start";
+export type MessageSender = ((this: Worker, ev: MessageEvent<Message>) => void) | null;
+
 declare var self: DedicatedWorkerGlobalScope;
 
-self.onmessage = event => {
-  console.log(event);
+self.onmessage = (event: { data: Message }) => {
+  console.log(event.data);
   self.postMessage("received!");
 };
 

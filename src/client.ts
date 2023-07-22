@@ -1,13 +1,19 @@
 import Server from "./server.js?worker";
 
+import type { Message, MessageSender } from "./server.js";
+
 declare var canvas: HTMLCanvasElement;
-
 const ctx = canvas.getContext("2d")!;
-document.body.append(ctx.toString());
 
-main();
+new ResizeObserver(() => {
+  const { offsetWidth, offsetHeight } = canvas;
+  canvas.width = offsetWidth;
+  canvas.height = offsetHeight;
+  ctx.imageSmoothingEnabled = false;
+  render();
+}).observe(canvas);
 
-const server = new Server();
+const server: Worker & { postMessage: (message: Message) => void; onmessage: MessageSender; } = new Server();
 console.log(server);
 
 console.log("send gg");
@@ -16,11 +22,15 @@ server.onmessage = event => {
   console.log(event);
 };
 
-async function main(): Promise<void> {
-  ctx.font = "20px monospace";
+function render() {
+  const { width, height } = canvas;
+  // Reset for next frame
+  ctx.clearRect(0,0,width,height);
+
+  ctx.font = "40px monospace";
+  ctx.textBaseline = "top";
   ctx.fillStyle = "red";
-  ctx.fillText("gg",0,10);
-  requestAnimationFrame(main);
+  ctx.fillText(Math.random(),0,0);
 }
 
 // https://www.thecodeship.com/web-development/alternative-to-javascript-evil-setinterval/

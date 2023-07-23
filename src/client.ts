@@ -16,10 +16,12 @@ new ResizeObserver(() => {
 const server: Worker & { postMessage: (message: Message) => void; onmessage: MessageSender; } = new Server();
 console.log(server);
 
-console.log("send gg");
-server.postMessage("gg");
-server.onmessage = event => {
-  console.log(event);
+server.postMessage("start" satisfies Message);
+server.onmessage = (event: MessageEvent<Message>) => {
+  if (event.data === "start") console.log(event);
+  switch (event.data){
+    case "render": render(); break;
+  }
 };
 
 function render() {
@@ -30,7 +32,7 @@ function render() {
   ctx.font = "40px monospace";
   ctx.textBaseline = "top";
   ctx.fillStyle = "red";
-  ctx.fillText(Math.random(),0,0);
+  ctx.fillText(`${Math.random()}`,0,0);
 }
 
 // https://www.thecodeship.com/web-development/alternative-to-javascript-evil-setinterval/
